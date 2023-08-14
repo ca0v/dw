@@ -5,6 +5,25 @@ using System.Drawing;
 namespace WinFormsApp1
 {
 
+	internal class Configuration
+	{
+		private static System.Configuration.AppSettingsReader appsettings = new System.Configuration.AppSettingsReader();
+		internal static string IronSoftwareBarcodeApiKey { get; } = TryGetValue("IronSoftware.Barcode.ApiKey", "");
+
+		internal static T TryGetValue<T>(string key, T defaultValue)
+		{
+			try
+			{
+				return (T)appsettings.GetValue(key, typeof(T));
+			}
+			catch
+			{
+				return defaultValue;
+			}
+		}
+
+	}
+
 	internal class BarcodeDecoder
 	{
 		public BarcodeReaderOptions BarcodeOptions { get; }
@@ -12,7 +31,7 @@ namespace WinFormsApp1
 		public BarcodeDecoder()
 		{
 			// read the API key from app.config
-			var apiKey = System.Configuration.ConfigurationManager.AppSettings["IronSoftware.Barcode.ApiKey"];
+			var apiKey = Configuration.IronSoftwareBarcodeApiKey;
 			if (string.IsNullOrEmpty(apiKey))
 			{
 				throw new System.Exception("IronSoftware.Barcode.ApiKey is not set in app.config");
@@ -37,35 +56,21 @@ namespace WinFormsApp1
 				UseCode39ExtendedMode = true
 			};
 
-			var appsettings = new System.Configuration.AppSettingsReader();
-
 			// if there exists barcode.expect-multiple-barcodes in app settings, use it
-			barcodeOptions.ExpectMultipleBarcodes = TryGetValue(appsettings, "barcode.expect-multiple-barcodes", barcodeOptions.ExpectMultipleBarcodes);
-			barcodeOptions.ExpectBarcodeTypes = StringToEnum<BarcodeEncoding>(TryGetValue(appsettings, "barcode.expect-barcode-types", barcodeOptions.ExpectBarcodeTypes.ToString()));
-			barcodeOptions.Speed = StringToEnum<ReadingSpeed>(TryGetValue(appsettings, "barcode.speed", barcodeOptions.Speed.ToString()));
-			barcodeOptions.MaxParallelThreads = TryGetValue(appsettings, "barcode.max-parallel-threads", barcodeOptions.MaxParallelThreads);
-			barcodeOptions.RemoveFalsePositive = TryGetValue(appsettings, "barcode.remove-false-positive", barcodeOptions.RemoveFalsePositive);
+			barcodeOptions.ExpectMultipleBarcodes = Configuration.TryGetValue("barcode.expect-multiple-barcodes", barcodeOptions.ExpectMultipleBarcodes);
+			barcodeOptions.ExpectBarcodeTypes = StringToEnum<BarcodeEncoding>(Configuration.TryGetValue("barcode.expect-barcode-types", barcodeOptions.ExpectBarcodeTypes.ToString()));
+			barcodeOptions.Speed = StringToEnum<ReadingSpeed>(Configuration.TryGetValue("barcode.speed", barcodeOptions.Speed.ToString()));
+			barcodeOptions.MaxParallelThreads = Configuration.TryGetValue("barcode.max-parallel-threads", barcodeOptions.MaxParallelThreads);
+			barcodeOptions.RemoveFalsePositive = Configuration.TryGetValue("barcode.remove-false-positive", barcodeOptions.RemoveFalsePositive);
 			barcodeOptions.CropArea = new CropRectangle
 			{
-				X = TryGetValue(appsettings, "barcode.crop-area.top", barcodeOptions.CropArea.X),
-				Y = TryGetValue(appsettings, "barcode.crop-area.left", barcodeOptions.CropArea.Y),
-				Width = TryGetValue(appsettings, "barcode.crop-area.width", barcodeOptions.CropArea.Width),
-				Height = TryGetValue(appsettings, "barcode.crop-area.height", barcodeOptions.CropArea.Height)
+				X = Configuration.TryGetValue("barcode.crop-area.top", barcodeOptions.CropArea.X),
+				Y = Configuration.TryGetValue("barcode.crop-area.left", barcodeOptions.CropArea.Y),
+				Width = Configuration.TryGetValue("barcode.crop-area.width", barcodeOptions.CropArea.Width),
+				Height = Configuration.TryGetValue("barcode.crop-area.height", barcodeOptions.CropArea.Height)
 			};
-			barcodeOptions.UseCode39ExtendedMode = TryGetValue(appsettings, "barcode.use-code39-extended-mode", barcodeOptions.UseCode39ExtendedMode);
+			barcodeOptions.UseCode39ExtendedMode = Configuration.TryGetValue("barcode.use-code39-extended-mode", barcodeOptions.UseCode39ExtendedMode);
 
-		}
-
-		private static T TryGetValue<T>(System.Configuration.AppSettingsReader appsettings, string key, T defaultValue)
-		{
-			try
-			{
-				return (T)appsettings.GetValue(key, typeof(T));
-			}
-			catch
-			{
-				return defaultValue;
-			}
 		}
 
 		private static T StringToEnum<T>(string value)

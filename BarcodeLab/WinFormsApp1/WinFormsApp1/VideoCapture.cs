@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
@@ -25,10 +26,21 @@ public class VideoCapture
     internal static VideoSourceWrapper WatchDevice(string monikerString)
     {
         var videoSource = new VideoCaptureDevice(monikerString);
-        // pick resolution where width is 1280
-        var targetRes = videoSource.VideoCapabilities.FirstOrDefault(c => c.FrameSize.Width == 1280, videoSource.VideoCapabilities[0]);
-        videoSource.VideoResolution = targetRes;
-
+        // pick resolution where width is 1280, grayscale
+        var idealResWidth = Configuration.TryGetValue("barcode.ideal-video-width", 1024);
+        var capabilities = videoSource.VideoCapabilities.OrderBy(c => c.FrameSize.Width).ThenBy(c => c.BitCount);
+        var ideal = capabilities.FirstOrDefault(c => c.FrameSize.Width == idealResWidth);
+        if (ideal == null)
+        {
+            ideal = capabilities.FirstOrDefault(c => c.FrameSize.Width > idealResWidth);
+        }
+        if (ideal == null)
+        {
+            ideal = capabilities.FirstOrDefault(videoSource.VideoCapabilities[0]);
+        }
+        if (ideal == null) throw new Exception("No suitable resolution found");
+        Trace.WriteLine($"Using resolution {ideal.FrameSize.Width}x{ideal.FrameSize.Height}");
+        videoSource.VideoResolution = ideal;
         var result = new VideoSourceWrapper(videoSource);
         return result;
     }

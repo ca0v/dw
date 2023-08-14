@@ -1,17 +1,26 @@
+using System.Diagnostics;
 using System.Media;
-using System.Text;
 
 namespace WinFormsApp1
 {
 	public partial class Form1 : Form
 	{
+		private bool IsProcessingBarcode = false;
+		private bool IsFirstRun = true;
+
 		private readonly BarcodeDecoder barcodeDecoder = new BarcodeDecoder();
-		PictureBox pictureBoxVideoCapture;
-		VideoSourceWrapper? videoCapture;
+		private VideoSourceWrapper? videoCapture;
 
 		public Form1()
 		{
 			InitializeComponent();
+		}
+
+		private void UpdateVideoFeed(Bitmap frame)
+		{
+			// draw the this.latestImage on the pictureBoxVideoCapture
+			this.pictureBoxVideoCapture.Image?.Dispose();
+			this.pictureBoxVideoCapture.Image = (Bitmap)frame.Clone();
 		}
 
 		public static void PlaySuccess()
@@ -52,9 +61,6 @@ namespace WinFormsApp1
 			videoCapture.Start(OnFrame);
 		}
 
-		private bool IsProcessingBarcode = false;
-		private bool IsFirstRun = true;
-
 		private async void OnFrame(Bitmap frame)
 		{
 			if (!this.InvokeRequired) throw new Exception("We should not be on the UI thread");
@@ -65,17 +71,18 @@ namespace WinFormsApp1
 				IsFirstRun = false;
 				this.Invoke(() =>
 				{
-					this.pictureBoxVideoCapture.Size = frame.Size;
-					// turn off any scaling on the picture box
-					this.pictureBoxVideoCapture.SizeMode = PictureBoxSizeMode.Normal;
+					// this.pictureBoxVideoCapture.Size = new System.Drawing.Size(frame.Size.Width, frame.Size.Height);
+					// this.pictureBoxVideoCapture.Dock = DockStyle.Top | DockStyle.Left;
 				});
 			}
 
-			var bitmapForUx = (Bitmap)frame.Clone();
-			this.pictureBoxVideoCapture.Image?.Dispose();
-			this.pictureBoxVideoCapture.Image = bitmapForUx;
+			UpdateVideoFeed(frame);
 
-			if (IsProcessingBarcode) return;
+			if (IsProcessingBarcode)
+			{
+				return;
+			}
+
 			try
 			{
 				IsProcessingBarcode = true;
@@ -139,6 +146,10 @@ namespace WinFormsApp1
 				table.Controls.Add(new Label() { Text = value }, 1, row);
 				row++;
 			}
+		}
+
+		private void Form1_Paint(object sender, PaintEventArgs e)
+		{
 		}
 	}
 }

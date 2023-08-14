@@ -26,8 +26,8 @@ namespace WinFormsApp1
 
 			// redirect Console.WriteLine to the System.Diagnostics.TextWriterTraceListener
 			Trace.Listeners.Add(new ConsoleTraceListener());
-			Console.WriteLine("Hello World");
-			Trace.WriteLine("Hello World");
+			Console.WriteLine("Console World");
+			Trace.WriteLine("Trace World");
 			Application.Run(form);
 		}
 

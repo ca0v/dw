@@ -49,9 +49,10 @@
 			// pictureBoxVideoCapture
 			// 
 			pictureBoxVideoCapture.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			pictureBoxVideoCapture.BackgroundImageLayout = ImageLayout.None;
 			pictureBoxVideoCapture.Location = new System.Drawing.Point(34, 80);
 			pictureBoxVideoCapture.Name = "pictureBoxVideoCapture";
-			pictureBoxVideoCapture.Size = new System.Drawing.Size(834, 448);
+			pictureBoxVideoCapture.Size = new System.Drawing.Size(1310, 448);
 			pictureBoxVideoCapture.SizeMode = PictureBoxSizeMode.Zoom;
 			pictureBoxVideoCapture.TabIndex = 1;
 			pictureBoxVideoCapture.TabStop = false;
@@ -61,7 +62,7 @@
 			textBoxBarcode.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			textBoxBarcode.Location = new System.Drawing.Point(34, 535);
 			textBoxBarcode.Name = "textBoxBarcode";
-			textBoxBarcode.Size = new System.Drawing.Size(833, 31);
+			textBoxBarcode.Size = new System.Drawing.Size(1309, 31);
 			textBoxBarcode.TabIndex = 2;
 			// 
 			// comboBoxInputDevice
@@ -94,14 +95,14 @@
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
-			tableLayoutPanel1.Size = new System.Drawing.Size(834, 343);
+			tableLayoutPanel1.Size = new System.Drawing.Size(1310, 343);
 			tableLayoutPanel1.TabIndex = 6;
 			// 
 			// Form1
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new System.Drawing.Size(894, 985);
+			ClientSize = new System.Drawing.Size(1370, 985);
 			Controls.Add(tableLayoutPanel1);
 			Controls.Add(comboBoxInputDevice);
 			Controls.Add(textBoxBarcode);
@@ -111,6 +112,7 @@
 			Text = "Form1";
 			FormClosing += Form1_FormClosing;
 			Load += Form1_Load;
+			Paint += Form1_Paint;
 			((System.ComponentModel.ISupportInitialize)pictureBoxVideoCapture).EndInit();
 			ResumeLayout(false);
 			PerformLayout();
@@ -120,8 +122,9 @@
 
 		private Button buttonConnectToCamera;
 		private TextBox textBoxBarcode;
-		private ListBox listBox1;
 		private ComboBox comboBoxInputDevice;
 		private TableLayoutPanel tableLayoutPanel1;
+		private PictureBox pictureBoxVideoCapture;
+
 	}
 }
