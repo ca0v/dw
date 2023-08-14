@@ -53,12 +53,26 @@ namespace WinFormsApp1
 		}
 
 		private bool IsProcessingBarcode = false;
+		private bool IsFirstRun = true;
 
 		private async void OnFrame(Bitmap frame)
 		{
 			if (!this.InvokeRequired) throw new Exception("We should not be on the UI thread");
 
+			// set this.pictureBoxVideoCapture Size to match the frame
+			if (IsFirstRun)
+			{
+				IsFirstRun = false;
+				this.Invoke(() =>
+				{
+					this.pictureBoxVideoCapture.Size = frame.Size;
+					// turn off any scaling on the picture box
+					this.pictureBoxVideoCapture.SizeMode = PictureBoxSizeMode.Normal;
+				});
+			}
+
 			var bitmapForUx = (Bitmap)frame.Clone();
+			this.pictureBoxVideoCapture.Image?.Dispose();
 			this.pictureBoxVideoCapture.Image = bitmapForUx;
 
 			if (IsProcessingBarcode) return;
