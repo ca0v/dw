@@ -1,42 +1,42 @@
+using System.Media;
 using System.Text;
-using AForge.Video.DirectShow;
 
 namespace WinFormsApp1
 {
 	public partial class Form1 : Form
 	{
+		private readonly BarcodeDecoder barcodeDecoder = new BarcodeDecoder();
 		PictureBox pictureBoxVideoCapture;
+		VideoSourceWrapper? videoCapture;
 
 		public Form1()
 		{
 			InitializeComponent();
 		}
 
-		private VideoCaptureDevice? videoCaptureDevice;
+		public static void PlaySuccess()
+		{
+			var waveFile = @"./Assets/success.wav";
+			var player = new SoundPlayer(waveFile);
+			player.Play();
+		}
 
 		// on closing, close the video device
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (this.videoCaptureDevice != null)
-			{
-				this.videoCaptureDevice.SignalToStop();
-				this.videoCaptureDevice = null;
-			}
+			videoCapture?.Stop();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			if (this.videoCaptureDevice != null)
+			if (true == this.videoCapture?.IsWatching)
 			{
-				this.videoCaptureDevice.SignalToStop();
-				this.videoCaptureDevice = null;
+				videoCapture.Stop();
+				this.videoCapture = null;
 				return;
 			}
 
-			var pictureBox = this.pictureBoxVideoCapture;
-			var barcodeResult = this.textBoxBarcode;
-
-			var items = AsArray(new FilterInfoCollection(FilterCategory.VideoInputDevice));
+			var items = VideoCapture.Devices();
 			if (items.Length == 0) throw new Exception("No Video Input Device found");
 
 			if (this.comboBoxInputDevice.SelectedIndex < 0)
@@ -48,122 +48,60 @@ namespace WinFormsApp1
 			var desiredItem = items.FirstOrDefault(i => i.Name == this.comboBoxInputDevice.SelectedItem.ToString());
 			if (desiredItem == null) throw new Exception($"Camera not found");
 
-			var videoSource = this.videoCaptureDevice = new VideoCaptureDevice(desiredItem.MonikerString);
-			// pick resolution where width is 1280
-			var targetRes = videoSource.VideoCapabilities.FirstOrDefault(c => c.FrameSize.Width == 1280, videoSource.VideoCapabilities[0]);
-			videoSource.VideoResolution = targetRes;
+			videoCapture = VideoCapture.WatchDevice(desiredItem.MonikerString);
+			videoCapture.Start(OnFrame);
+		}
 
-			var timeOfLastScan = DateTime.Now.AddSeconds(-1);
+		private bool IsProcessingBarcode = false;
 
-			videoSource.VideoSourceError += VideoSource_VideoSourceError;
+		private async void OnFrame(Bitmap frame)
+		{
+			if (!this.InvokeRequired) throw new Exception("We should not be on the UI thread");
 
-			videoSource.SnapshotFrame += (s, e) =>
+			var bitmapForUx = (Bitmap)frame.Clone();
+			this.Invoke(() =>
 			{
-			};
+				this.pictureBoxVideoCapture.Image = bitmapForUx;
+			});
 
-			videoSource.PlayingFinished += (s, e) =>
+			if (IsProcessingBarcode) return;
+			IsProcessingBarcode = true;
+
+			var bitmap = (Bitmap)frame.Clone();
+			try
 			{
-			};
-
-			videoSource.NewFrame += (s, e) =>
-			{
-				// are we on the UI thread?
-				if (!this.InvokeRequired) throw new Exception("Must not execute on the UI thread");
-
-				// display the barcode value, but we are not on the UI thread, so...
-				this.Invoke((MethodInvoker)delegate
+				var barcode = await barcodeDecoder.ImageAsBarcode(bitmap);
+				if (!string.IsNullOrEmpty(barcode))
 				{
-					var bitmap = (Bitmap)e.Frame.Clone();
-					pictureBox.Image = bitmap;
-				});
-
-				// has one second passed yet?
-				var timeSinceLastScan = DateTime.Now.Subtract(timeOfLastScan);
-				if (timeSinceLastScan.TotalMilliseconds > 200)
-				{
-					// create a new thread to decode the barcode
-					var bitmap = (Bitmap)e.Frame.Clone();
-					var thread = new Thread(() =>
+					// display the barcode value, but we are not on the UI thread, so...
+					this.Invoke((MethodInvoker)delegate
 					{
-						var barcode = BarcodeDecoder.ImageAsBarcode(bitmap);
-						if (!string.IsNullOrEmpty(barcode))
-						{
-							// display the barcode value, but we are not on the UI thread, so...
-							this.Invoke((MethodInvoker)delegate
-							{
-								barcodeResult.Text = barcode;
-								var tableData = BarcodeDecoder.DecodeDriverLicense(barcode);
-								// create a table control to hold this data
-								ShowDriverInfoInTable(tableData);
-							});
-						}
-						timeOfLastScan = DateTime.Now;
+						var priorBarcode = this.textBoxBarcode.Text;
+						if (priorBarcode == barcode) return;
+						this.textBoxBarcode.Text = barcode;
+						PlaySuccess();
+						var tableData = BarcodeDecoder.DecodeDriverLicense(barcode);
+						// create a table control to hold this data
+						ShowDriverInfoInTable(tableData);
 					});
-					thread.Start();
 				}
-
-			};
-
-
-			videoSource.Start();
-
-
-		}
-
-		private string AsString(Dictionary<string, string> dictionary)
-		{
-			var sb = new StringBuilder();
-			foreach (var kvp in dictionary)
-			{
-				sb.AppendLine($"{kvp.Key}: {kvp.Value}");
 			}
-			return sb.ToString();
-		}
-
-		private FilterInfo[] AsArray(FilterInfoCollection items)
-		{
-			var result = new FilterInfo[items.Count];
-			for (var i = 0; i < items.Count; i++)
+			finally
 			{
-				result[i] = items[i];
+				IsProcessingBarcode = false;
 			}
-			return result;
-		}
-
-		private void VideoSource_VideoSourceError(object sender, AForge.Video.VideoSourceErrorEventArgs eventArgs)
-		{
-			throw new NotImplementedException();
-		}
-
-		private void button1_Click_1(object sender, EventArgs e)
-		{
-			var barcodeResult = this.textBoxBarcode;
-			var photo = Bitmap.FromFile(@"C:\Users\calix\Pictures\barcode_pdf417\sc_dl.png");
-			var pictureBox = this.pictureBoxVideoCapture;
-			pictureBox.Image = photo;
-
-			var barcode = BarcodeDecoder.ImageAsBarcode(photo);
-			if (!string.IsNullOrEmpty(barcode))
-			{
-				barcodeResult.Text = barcode;
-			}
-			else
-			{
-				barcodeResult.Text = "Barcode not found";
-			}
-
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			var comboBoxInputDevice = this.comboBoxInputDevice;
-			var items = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-			for (int i = 0; i < items.Count; i++)
+			var items = VideoCapture.Devices();
+			for (int i = 0; i < items.Count(); i++)
 			{
-				{
-					comboBoxInputDevice.Items.Add(items[i].Name);
-				}
+				comboBoxInputDevice.Items.Add(items[i].Name);
 			}
+			if (comboBoxInputDevice.Items.Count > 0)
+				comboBoxInputDevice.SelectedIndex = 0;
 		}
 
 		private void ShowDriverInfoInTable(Dictionary<string, string> tableData)

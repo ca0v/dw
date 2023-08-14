@@ -1,7 +1,9 @@
-using System.Runtime.InteropServices;
+using System.Diagnostics;
+using Color = System.Drawing.Color;
 
 namespace WinFormsApp1
 {
+
 	internal static class Program
 	{
 		/// <summary>
@@ -10,17 +12,48 @@ namespace WinFormsApp1
 		[STAThread]
 		static void Main()
 		{
-			try
+			RunTests();
+			ApplicationConfiguration.Initialize();
+			var form = new Form1();
+			InjectDarkModeStyles(form);
+			// show on 1st monitor
+			form.StartPosition = FormStartPosition.CenterScreen;
+			form.Location = new System.Drawing.Point(0, 0);
+			// maximized
+			form.WindowState = FormWindowState.Maximized;
+			// bring to front
+			form.TopMost = true;
+			Application.Run(form);
+		}
+
+		private static void InjectDarkModeStyles(Form1 form)
+		{
+			var darkMode = new DarkMode();
+			darkMode.ApplyTo(form);
+		}
+
+		private static void RunTests()
+		{
+			var tests = new Tests.BarcodeDecoderTests();
+			tests.TestImageAsBarcode();
+		}
+	}
+
+	internal class DarkMode
+	{
+
+		public void ApplyTo(Control form)
+		{
+			form.BackColor = Color.FromArgb(255, 31, 31, 31);
+			form.ForeColor = Color.FromArgb(255, 180, 180, 180);
+
+			// style every control
+			foreach (var control in form.Controls)
 			{
-				// To customize application configuration such as set high DPI settings or default font,
-				// see https://aka.ms/applicationconfiguration.
-				ApplicationConfiguration.Initialize();
-				Application.Run(new Form1());
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex);
-				MessageBox.Show(ex.ToString());
+				if (control is Control c)
+				{
+					ApplyTo(c);
+				}
 			}
 		}
 	}

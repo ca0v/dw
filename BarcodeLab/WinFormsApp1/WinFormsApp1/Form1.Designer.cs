@@ -68,17 +68,6 @@
 			textBoxBarcode.Size = new System.Drawing.Size(584, 23);
 			textBoxBarcode.TabIndex = 2;
 			// 
-			// buttonPhotoPicker
-			// 
-			buttonPhotoPicker.Location = new System.Drawing.Point(336, 11);
-			buttonPhotoPicker.Margin = new Padding(2);
-			buttonPhotoPicker.Name = "buttonPhotoPicker";
-			buttonPhotoPicker.Size = new System.Drawing.Size(129, 33);
-			buttonPhotoPicker.TabIndex = 3;
-			buttonPhotoPicker.Text = "Select A Photo";
-			buttonPhotoPicker.UseVisualStyleBackColor = true;
-			buttonPhotoPicker.Click += button1_Click_1;
-			// 
 			// comboBoxInputDevice
 			// 
 			comboBoxInputDevice.FormattingEnabled = true;
