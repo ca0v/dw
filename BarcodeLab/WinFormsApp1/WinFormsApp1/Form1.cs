@@ -59,18 +59,15 @@ namespace WinFormsApp1
 			if (!this.InvokeRequired) throw new Exception("We should not be on the UI thread");
 
 			var bitmapForUx = (Bitmap)frame.Clone();
-			this.Invoke(() =>
-			{
-				this.pictureBoxVideoCapture.Image = bitmapForUx;
-			});
+			this.pictureBoxVideoCapture.Image = bitmapForUx;
 
 			if (IsProcessingBarcode) return;
-			IsProcessingBarcode = true;
-
-			var bitmap = (Bitmap)frame.Clone();
 			try
 			{
-				var barcode = await barcodeDecoder.ImageAsBarcode(bitmap);
+				IsProcessingBarcode = true;
+				var bitmapForBarcode = (Bitmap)frame.Clone();
+				var barcode = await barcodeDecoder.ImageAsBarcode(bitmapForBarcode);
+				bitmapForBarcode.Dispose();
 				if (!string.IsNullOrEmpty(barcode))
 				{
 					// display the barcode value, but we are not on the UI thread, so...

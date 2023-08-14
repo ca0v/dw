@@ -31,7 +31,6 @@
 			buttonConnectToCamera = new Button();
 			pictureBoxVideoCapture = new PictureBox();
 			textBoxBarcode = new TextBox();
-			buttonPhotoPicker = new Button();
 			comboBoxInputDevice = new ComboBox();
 			tableLayoutPanel1 = new TableLayoutPanel();
 			((System.ComponentModel.ISupportInitialize)pictureBoxVideoCapture).BeginInit();
@@ -39,10 +38,9 @@
 			// 
 			// buttonConnectToCamera
 			// 
-			buttonConnectToCamera.Location = new System.Drawing.Point(157, 11);
-			buttonConnectToCamera.Margin = new Padding(2);
+			buttonConnectToCamera.Location = new System.Drawing.Point(411, 18);
 			buttonConnectToCamera.Name = "buttonConnectToCamera";
-			buttonConnectToCamera.Size = new System.Drawing.Size(175, 33);
+			buttonConnectToCamera.Size = new System.Drawing.Size(299, 55);
 			buttonConnectToCamera.TabIndex = 0;
 			buttonConnectToCamera.Text = "Connect To Camera";
 			buttonConnectToCamera.UseVisualStyleBackColor = true;
@@ -51,10 +49,9 @@
 			// pictureBoxVideoCapture
 			// 
 			pictureBoxVideoCapture.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-			pictureBoxVideoCapture.Location = new System.Drawing.Point(24, 48);
-			pictureBoxVideoCapture.Margin = new Padding(2);
+			pictureBoxVideoCapture.Location = new System.Drawing.Point(34, 80);
 			pictureBoxVideoCapture.Name = "pictureBoxVideoCapture";
-			pictureBoxVideoCapture.Size = new System.Drawing.Size(584, 269);
+			pictureBoxVideoCapture.Size = new System.Drawing.Size(834, 448);
 			pictureBoxVideoCapture.SizeMode = PictureBoxSizeMode.Zoom;
 			pictureBoxVideoCapture.TabIndex = 1;
 			pictureBoxVideoCapture.TabStop = false;
@@ -62,19 +59,17 @@
 			// textBoxBarcode
 			// 
 			textBoxBarcode.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-			textBoxBarcode.Location = new System.Drawing.Point(24, 321);
-			textBoxBarcode.Margin = new Padding(2);
+			textBoxBarcode.Location = new System.Drawing.Point(34, 535);
 			textBoxBarcode.Name = "textBoxBarcode";
-			textBoxBarcode.Size = new System.Drawing.Size(584, 23);
+			textBoxBarcode.Size = new System.Drawing.Size(833, 31);
 			textBoxBarcode.TabIndex = 2;
 			// 
 			// comboBoxInputDevice
 			// 
 			comboBoxInputDevice.FormattingEnabled = true;
-			comboBoxInputDevice.Location = new System.Drawing.Point(22, 11);
-			comboBoxInputDevice.Margin = new Padding(2);
+			comboBoxInputDevice.Location = new System.Drawing.Point(31, 18);
 			comboBoxInputDevice.Name = "comboBoxInputDevice";
-			comboBoxInputDevice.Size = new System.Drawing.Size(129, 23);
+			comboBoxInputDevice.Size = new System.Drawing.Size(305, 33);
 			comboBoxInputDevice.TabIndex = 5;
 			// 
 			// tableLayoutPanel1
@@ -83,36 +78,35 @@
 			tableLayoutPanel1.ColumnCount = 2;
 			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
 			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-			tableLayoutPanel1.Location = new System.Drawing.Point(24, 349);
+			tableLayoutPanel1.Location = new System.Drawing.Point(34, 582);
+			tableLayoutPanel1.Margin = new Padding(4, 5, 4, 5);
 			tableLayoutPanel1.Name = "tableLayoutPanel1";
 			tableLayoutPanel1.RowCount = 12;
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.Size = new System.Drawing.Size(584, 206);
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+			tableLayoutPanel1.Size = new System.Drawing.Size(834, 343);
 			tableLayoutPanel1.TabIndex = 6;
 			// 
 			// Form1
 			// 
-			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new System.Drawing.Size(626, 591);
+			ClientSize = new System.Drawing.Size(894, 985);
 			Controls.Add(tableLayoutPanel1);
 			Controls.Add(comboBoxInputDevice);
-			Controls.Add(buttonPhotoPicker);
 			Controls.Add(textBoxBarcode);
 			Controls.Add(pictureBoxVideoCapture);
 			Controls.Add(buttonConnectToCamera);
-			Margin = new Padding(2);
 			Name = "Form1";
 			Text = "Form1";
 			FormClosing += Form1_FormClosing;
@@ -126,7 +120,6 @@
 
 		private Button buttonConnectToCamera;
 		private TextBox textBoxBarcode;
-		private Button buttonPhotoPicker;
 		private ListBox listBox1;
 		private ComboBox comboBoxInputDevice;
 		private TableLayoutPanel tableLayoutPanel1;
