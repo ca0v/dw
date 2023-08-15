@@ -12,23 +12,43 @@ namespace WinFormsApp1
 		[STAThread]
 		static void Main()
 		{
-			RunTests();
-			ApplicationConfiguration.Initialize();
-			var form = new Form1();
-			InjectDarkModeStyles(form);
-			// show on 1st monitor
-			form.StartPosition = FormStartPosition.CenterScreen;
-			form.Location = new System.Drawing.Point(0, 0);
-			// maximized
-			form.WindowState = FormWindowState.Maximized;
-			// bring to front
-			form.TopMost = true;
+			var logger = new Logger();
+			logger.AppStarted();
+			try
+			{
+				RunTests();
+				ApplicationConfiguration.Initialize();
 
-			// redirect Console.WriteLine to the System.Diagnostics.TextWriterTraceListener
-			Trace.Listeners.Add(new ConsoleTraceListener());
-			Console.WriteLine("Console World");
-			Trace.WriteLine("Trace World");
-			Application.Run(form);
+				var form = new Form1();
+				InjectDarkModeStyles(form);
+				{
+					// show on 1st monitor
+					form.StartPosition = FormStartPosition.CenterScreen;
+					form.Location = new System.Drawing.Point(0, 0);
+					// maximized
+					form.WindowState = FormWindowState.Maximized;
+					// bring to front
+					form.TopMost = true;
+				}
+
+				{
+					Trace.AutoFlush = true;
+					Console.WriteLine("Console World");
+					Trace.WriteLine("Trace World");
+					// write to the event log
+					EventLog.WriteEntry("Application", "Application started", EventLogEntryType.Information, 1001);
+				}
+
+				Application.Run(form);
+			}
+			catch (Exception ex)
+			{
+				logger.Error(ex);
+			}
+			finally
+			{
+				logger.AppStopped();
+			}
 		}
 
 		private static void InjectDarkModeStyles(Form1 form)

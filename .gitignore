@@ -4,3 +4,4 @@ obj
 .vscode
 *.csproj.user
 App.Config
+PublishProfiles

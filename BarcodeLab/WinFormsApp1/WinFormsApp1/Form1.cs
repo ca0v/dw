@@ -11,8 +11,11 @@ namespace WinFormsApp1
 		private readonly BarcodeDecoder barcodeDecoder = new BarcodeDecoder();
 		private VideoSourceWrapper? videoCapture;
 
+		private Logger logger = new Logger();
+
 		public Form1()
 		{
+			logger.Log("Form1() ctor");
 			InitializeComponent();
 		}
 
@@ -96,6 +99,7 @@ namespace WinFormsApp1
 					{
 						var priorBarcode = this.textBoxBarcode.Text;
 						if (priorBarcode == barcode) return;
+						logger.Verbose("Barcode found");
 						this.textBoxBarcode.Text = barcode;
 						PlaySuccess();
 						var tableData = BarcodeDecoder.DecodeDriverLicense(barcode);
@@ -150,6 +154,7 @@ namespace WinFormsApp1
 
 		private void Form1_Paint(object sender, PaintEventArgs e)
 		{
+			logger.Log("Form1_Paint");
 		}
 	}
 }
