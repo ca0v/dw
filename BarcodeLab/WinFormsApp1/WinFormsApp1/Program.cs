@@ -1,4 +1,6 @@
+using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 using Color = System.Drawing.Color;
 
 namespace WinFormsApp1
@@ -17,7 +19,6 @@ namespace WinFormsApp1
 			try
 			{
 				RunTests();
-				ApplicationConfiguration.Initialize();
 
 				var form = new Form1();
 				InjectDarkModeStyles(form);

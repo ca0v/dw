@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace WinFormsApp1.Tests
 {
     public class BarcodeDecoderTests
@@ -6,7 +8,7 @@ namespace WinFormsApp1.Tests
         {
             Form1.PlaySuccess();
 
-            var photo = Bitmap.FromFile(@"C:\Users\calix\Pictures\barcode_pdf417\sc_dl.png");
+            var photo = Bitmap.FromFile(@"C:\Users\calix\Pictures\barcode_pdf417\sc_dl.png") as Bitmap;
             var barcode = await new BarcodeDecoder().ImageAsBarcode(photo);
             if (string.IsNullOrEmpty(barcode))
             {

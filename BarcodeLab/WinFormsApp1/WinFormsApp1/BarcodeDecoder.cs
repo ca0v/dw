@@ -1,6 +1,10 @@
 ﻿using IronBarCode;
 using IronSoftware.Drawing;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WinFormsApp1
 {
@@ -78,12 +82,23 @@ namespace WinFormsApp1
 			return (T)System.Enum.Parse(typeof(T), value);
 		}
 
-		async public Task<string> ImageAsBarcode(System.Drawing.Image image)
+		async public Task<string> ImageAsBarcode(Bitmap image)
 		{
-			var results = await BarcodeReader.ReadAsync(image, BarcodeOptions);
+			// convert the bitmap to a byte array
+			byte[] imageAsBytes = ImageToByteArray(image);
+			var results = await BarcodeReader.ReadAsync(imageAsBytes, BarcodeOptions);
 			if (results == null || !results.Any()) return "";
 			var values = results.Values();
-			return string.Join(',', values.ToArray());
+			return string.Join(",", values.ToArray());
+		}
+
+		private byte[] ImageToByteArray(Bitmap image)
+		{
+			using (var stream = new System.IO.MemoryStream())
+			{
+				image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+				return stream.ToArray();
+			}
 		}
 
 		public static Dictionary<string, string> DecodeDriverLicense(string barcode)

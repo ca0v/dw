@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Media;
+using System.Windows.Forms;
 
 namespace WinFormsApp1
 {
@@ -17,13 +22,6 @@ namespace WinFormsApp1
 		{
 			logger.Log("Form1() ctor");
 			InitializeComponent();
-		}
-
-		private void UpdateVideoFeed(Bitmap frame)
-		{
-			// draw the this.latestImage on the pictureBoxVideoCapture
-			this.pictureBoxVideoCapture.Image?.Dispose();
-			this.pictureBoxVideoCapture.Image = (Bitmap)frame.Clone();
 		}
 
 		public static void PlaySuccess()
@@ -60,7 +58,7 @@ namespace WinFormsApp1
 			var desiredItem = items.FirstOrDefault(i => i.Name == this.comboBoxInputDevice.SelectedItem.ToString());
 			if (desiredItem == null) throw new Exception($"Camera not found");
 
-			videoCapture = VideoCapture.WatchDevice(desiredItem.MonikerString);
+			videoCapture = VideoCapture.WatchDevice(desiredItem.MonikerString, this.pictureBoxVideoCapture);
 			videoCapture.Start(OnFrame);
 		}
 
@@ -72,14 +70,7 @@ namespace WinFormsApp1
 			if (IsFirstRun)
 			{
 				IsFirstRun = false;
-				this.Invoke(() =>
-				{
-					// this.pictureBoxVideoCapture.Size = new System.Drawing.Size(frame.Size.Width, frame.Size.Height);
-					// this.pictureBoxVideoCapture.Dock = DockStyle.Top | DockStyle.Left;
-				});
 			}
-
-			UpdateVideoFeed(frame);
 
 			if (IsProcessingBarcode)
 			{

@@ -1,4 +1,6 @@
-﻿namespace WinFormsApp1
+﻿using System.Windows.Forms;
+
+namespace WinFormsApp1
 {
 	partial class Form1
 	{
@@ -29,11 +31,10 @@
 		private void InitializeComponent()
 		{
 			buttonConnectToCamera = new Button();
-			pictureBoxVideoCapture = new PictureBox();
+			pictureBoxVideoCapture = new AForge.Controls.VideoSourcePlayer();
 			textBoxBarcode = new TextBox();
 			comboBoxInputDevice = new ComboBox();
 			tableLayoutPanel1 = new TableLayoutPanel();
-			((System.ComponentModel.ISupportInitialize)pictureBoxVideoCapture).BeginInit();
 			SuspendLayout();
 			// 
 			// buttonConnectToCamera
@@ -49,13 +50,14 @@
 			// pictureBoxVideoCapture
 			// 
 			pictureBoxVideoCapture.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			pictureBoxVideoCapture.BackColor = System.Drawing.Color.Black;
 			pictureBoxVideoCapture.BackgroundImageLayout = ImageLayout.None;
 			pictureBoxVideoCapture.Location = new System.Drawing.Point(34, 80);
 			pictureBoxVideoCapture.Name = "pictureBoxVideoCapture";
 			pictureBoxVideoCapture.Size = new System.Drawing.Size(1310, 448);
-			pictureBoxVideoCapture.SizeMode = PictureBoxSizeMode.Zoom;
 			pictureBoxVideoCapture.TabIndex = 1;
 			pictureBoxVideoCapture.TabStop = false;
+			pictureBoxVideoCapture.VideoSource = null;
 			// 
 			// textBoxBarcode
 			// 
@@ -113,7 +115,6 @@
 			FormClosing += Form1_FormClosing;
 			Load += Form1_Load;
 			Paint += Form1_Paint;
-			((System.ComponentModel.ISupportInitialize)pictureBoxVideoCapture).EndInit();
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -124,7 +125,7 @@
 		private TextBox textBoxBarcode;
 		private ComboBox comboBoxInputDevice;
 		private TableLayoutPanel tableLayoutPanel1;
-		private PictureBox pictureBoxVideoCapture;
+		private AForge.Controls.VideoSourcePlayer pictureBoxVideoCapture;
 
 	}
 }
